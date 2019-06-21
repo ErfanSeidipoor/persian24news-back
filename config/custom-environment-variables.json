@@ -1,0 +1,6 @@
+{
+    "jwt-privateKey":"JWT-PRIVATEKEY",
+    "db":{
+        "address" : "DB_ADDRESS"
+    }
+}

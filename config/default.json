@@ -1,0 +1,7 @@
+{
+    "name": "khabarchin - default",
+    "jwt-privateKey":"",
+    "db":{
+        "address" : ""
+    }
+}

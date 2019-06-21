@@ -1,0 +1,7 @@
+{
+    "name": "khabarchin - development",
+    "jwt-privateKey":"aklsnd2839482#&@*#9201hedowhh(*$@#((F*H",
+    "db":{
+        "address" : "mongodb://127.0.0.1:27017/news"
+    }
+}

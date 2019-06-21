@@ -1,0 +1,684 @@
+{
+    "db":{
+        "documents":{
+            "news":{
+                "_id":"ObjectId",
+                "title":"string",
+                "description":"string",
+                "agency":{
+                    "agencyId":"ObjectId",
+                    "agencyName":"string",
+                    "agencyLogo":"string"
+                },
+                "dbDate":"date",
+                "publishDate":"date",
+                "likes":[
+                    {
+                        "userId":"ObjectId",
+                        "username":"string",
+                        "date":"date"
+                    } 
+                ],
+                "dislikes":[
+                    {
+                        "userId":"ObjectId",
+                        "username":"string",
+                        "date":"date"
+                    }
+                ],
+                "comments":[
+                    {
+                        "_id":"ObjectId",
+                        "userId":"ObjectId",
+                        "username":"string",
+                        "value":"string",
+                        "likes":[
+                            {
+                                "_id":"ObjectId",
+                                "userId":"ObjectId",
+                                "username":"string",
+                                "date":"date"
+                            }
+                        ],
+                        "dislikes":[
+                            {
+                                "_id":"ObjectId",
+                                "userId":"ObjectId",
+                                "username":"string",
+                                "date":"date"
+                            }
+                        ]
+                    }                    
+                ]
+            },
+            "user":{
+                "_id":"ObjectId",
+                "username":"string",
+                "password":"string",
+                "isAdmin":"bool",
+                "tags":[
+                    {
+                        "tagId":"ObjectId",
+                        "tagvalue":"string",
+                        "date":"date"
+                    }
+                ],
+                "likes":[
+                    {
+                        "newsId":"ObjectId",
+                        "newsTitle":"string",
+                        "date":"date",
+                        "likeId":"ObjectId"
+                    }
+                ],
+                "dislikes":[
+                    {
+                        "newsId":"ObjectId",
+                        "newsTitle":"string",
+                        "date":"date",
+                        "dislikeId":"ObjectId"
+                    }
+                ],
+                "comments":[
+                    {
+                        "newsId":"ObjectId",
+                        "newsTitle": "string",
+                        "commnetId":"ObjectId",
+                        "commentValue":"string",
+                        "date":"date"
+                    }
+                ],
+                "commentLikes":[
+                    {
+                        "newsId": "ObjectId",
+                        "newsTitle": "string",
+                        "commentId": "ObjectId",
+                        "commentValue":"string",
+                        "userId":"ObjectId",
+                        "username":"string",
+                        "date":"date",
+                        "likeId":"ObjectId"
+                    }
+                ],
+                "commentDislikes":[
+                    {
+                        "newsId": "ObjectId",
+                        "newsTitle": "string",
+                        "commentId": "ObjectId",
+                        "commentValue":"string",
+                        "userId":"ObjectId",
+                        "username":"string",
+                        "date":"date",
+                        "dislikeId":"ObjectId"
+                    }
+                ]
+            },
+            "tag":{
+                "_id":"ObjectId",
+                "value":"string"
+            },
+            "agency":{
+                "_id":"ObjectId",
+                "name":"string",
+                "logo":"string"
+            }
+        }
+    },
+    "apis":[
+        {
+            "path":"/api/news/",
+            "method":"get",
+            "description":"return a list of news based on body parameters",
+            "body":[
+                {
+                    "body":{},
+                    "return":"return '20' number of latest newses recorded in db"
+                },
+                {
+                    "body":{
+                        "count":"number"
+                    },
+                    "return":"return 'count' number of latest newses recorded in db"
+                },
+                {
+                    "body":{
+                        "count":"number",
+                        "lowerThan":"number"
+                    },
+                    "return":"return 'count' number of newses recorded in db before of news with 'lowerThan' number"
+                },
+                {
+                    "body":{
+                        "count":"number",
+                        "greaterThan":"number"
+                    },
+                    "return":"return 'count' number of newses recorded in db after of news with 'greaterThan' number"
+                }
+            ],
+            "test":[
+                "it should return 400 if shape of boby is different",
+                "if body is empty it should return 20 latest news in db",
+                "if body has only 'count' property it should return 'count' latest news in db",
+                "if body has 'count' and 'lowerThan' properties it should return 'count' number of newses recorded in db before of news with 'lowerThan' number",
+                "if body has 'count' and 'greaterThan' properties it should return 'count' number of newses recorded in db after of news with 'greaterThan' number"
+            ]
+        },
+        {
+            "path":"/api/news/like",
+            "method":"post",
+            "description":"user can like a news",
+            "header":[
+                "x-auth-token"
+            ],
+            "body":[
+                {
+                    "body":{
+                        "newsId":"objectId"
+                    },
+                    "return": "return 200"
+                }
+            ],
+            "test":[
+                "it should return 401 if x-auth-token is undefined",
+                "it should return 400 if shape of boby is different",
+                "it should return 400 if news not found",
+                "it should return 409 if news has been liked before by user",
+                "it should add like item to news likes array",
+                "it should return 200"
+            ]
+        },
+        {
+            "path":"/api/news/like",
+            "method":"delete",
+            "description":"user can like a news",
+            "header":[
+                "x-auth-token"
+            ],
+            "body":[
+                {
+                    "body":{
+                        "newsId":"objectId"
+                    },
+                    "return": "return 200"
+                }
+            ],
+            "test":[
+                "it should return 401 if x-auth-token is undefined",
+                "it should return 400 if shape of boby is different",
+                "it should return 400 if news not found",
+                "it should return 400 if news has not been liked before by user",
+                "it should remove like item from news likes array",
+                "it should return 200"
+            ]
+        },
+        {
+            "path":"/api/news/dislike",
+            "method":"post",
+            "description":"user can dislike a news",
+            "header":[
+                "x-auth-token"
+            ],
+            "body":[
+                {
+                    "body":{
+                        "newsId":"objectId"
+                    },
+                    "return": "return 200"
+                }
+            ],
+            "test":[
+                "it should return 401 if x-auth-token is undefined",
+                "it should return 400 if shape of boby is different",
+                "it should return 400 if news not found",
+                "it should return 409 if news has been disliked before by user",
+                "it should add dislike item to news dislikes array",
+                "it should return 200"
+            ]
+        },
+        {
+            "path":"/api/news/dislike",
+            "method":"delete",
+            "description":"user can dislike a news",
+            "header":[
+                "x-auth-token"
+            ],
+            "body":[
+                {
+                    "body":{
+                        "newsId":"objectId"
+                    },
+                    "return": "return 200"
+                }
+            ],
+            "test":[
+                "it should return 401 if x-auth-token is undefined",
+                "it should return 400 if shape of boby is different",
+                "it should return 400 if news not found",
+                "it should return 400 if news has not been disliked before by user",
+                "it should remove dislike item from news dislikes array",
+                "it should return 200"
+            ]
+        },
+        {
+            "path":"/api/news/comment",
+            "method":"post",
+            "description":"user can write comment for a news",
+            "header":[
+                "x-auth-token"
+            ],
+            "body":[
+                {
+                    "body":{
+                        "newsId":"objectId",
+                        "value":"string"
+                    },
+                    "return": "return 200"
+                }
+            ],
+            "test":[
+                "it should return 401 if x-auth-token is undefined",
+                "it should return 400 if shape of boby is different",
+                "it should return 400 if news not found",
+                "it should add comment item to news comment array",
+                "it should return 200"
+            ]
+        },
+        {
+            "path":"/api/news/comment",
+            "method":"delete",
+            "description":"user can delete his comment for a news",
+            "header":[
+                "x-auth-token"
+            ],
+            "body":[
+                {
+                    "body":{
+                        "newsId":"objectId",
+                        "value":"string"
+                    },
+                    "return": "return 200"
+                }
+            ],
+            "test":[
+                "it should return 401 if x-auth-token is undefined",
+                "it should return 400 if shape of boby is different",
+                "it should return 400 if news not found",
+                "it should remove comment item from news comment array",
+                "it should return 200"
+            ]
+        },
+        {
+            "path":"/api/news/comment/like",
+            "method":"post",
+            "description":"user can like a comment from a news",
+            "header":[
+                "x-auth-token"
+            ],
+            "body":[
+                {
+                    "body":{
+                        "newsId":"objectId",
+                        "commentId":"objectId"
+                    },
+                    "return": "return 200"
+                }
+            ],
+            "test":[
+                "it should return 401 if x-auth-token is undefined",
+                "it should return 400 if shape of boby is different",
+                "it should return 400 if news not found",
+                "it should return 400 if comment not found",
+                "it should return 400 if comment has been liked before by user",
+                "it should add like item to comment likes array",
+                "it should return 200"
+            ]
+        },
+        {
+            "path":"/api/news/comment/like",
+            "method":"delete",
+            "description":"user can delete his like for a comment",
+            "header":[
+                "x-auth-token"
+            ],
+            "body":[
+                {
+                    "body":{
+                        "newsId":"objectId",
+                        "commentId":"objectId"
+                    },
+                    "return": "return 200"
+                }
+            ],
+            "test":[
+                "it should return 401 if x-auth-token is undefined",
+                "it should return 400 if shape of boby is different",
+                "it should return 400 if news not found",
+                "it should return 400 if comment not found",
+                "it should return 400 if comment has been liked before by user",
+                "it should remove like item from comment likes array",
+                "it should return 200"
+            ]
+        },
+        {
+            "path":"/api/news/comment/dislike",
+            "method":"post",
+            "description":"user can dislike a comment",
+            "header":[
+                "x-auth-token"
+            ],
+            "body":[
+                {
+                    "body":{
+                        "newsId":"objectId",
+                        "commentId":"objectId"
+                    },
+                    "return": "return 200"
+                }
+            ],
+            "test":[
+                "it should return 401 if x-auth-token is undefined",
+                "it should return 400 if shape of boby is different",
+                "it should return 400 if news not found",
+                "it should return 400 if comment not found",
+                "it should return 400 if comment has  been disliked before by user",
+                "it should add dislike item to comment dislikes array",
+                "it should return 200"
+            ]
+        },
+        {
+            "path":"/api/news/comment/dislike",
+            "method":"delete",
+            "description":"user can dislike a comment",
+            "header":[
+                "x-auth-token"
+            ],
+            "body":[
+                {
+                    "body":{
+                        "newsId":"objectId",
+                        "commentId":"objectId"
+                    },
+                    "return": "return 200"
+                }
+            ],
+            "test":[
+                "it should return 401 if x-auth-token is undefined",
+                "it should return 400 if shape of boby is different",
+                "it should return 400 if news not found",
+                "it should return 400 if comment not found",
+                "it should return 400 if comment has not been disliked before by user",
+                "it should remove dislike item from comment dislikes array",
+                "it should return 200"
+            ]
+        },
+        {
+            "path":"/api/user/",
+            "method":"get",
+            "description":"admin can get a list of all user",
+            "header":[
+                "x-auth-token"
+            ],
+            "body":[
+                {
+                    "body":{},
+                    "return": "return 200"
+                }
+            ],
+            "test":[
+                "it should return 401 if x-auth-token is undefined",
+                "it should return 403 if user isn't admin",
+                "it should return 200",
+                "it should return all user recorded in db",
+                "it should return array of object that containe 'username', 'tags' and 'isAdmin' and 'id', doesn't have 'password' "
+            ]
+        },
+        {
+            "path":"/api/user/:id",
+            "method":"get",
+            "description":"admin can get a user's properties with given id from path",
+            "header":[
+                "x-auth-token"
+            ],
+            "body":[
+                {
+                    "body":{},
+                    "return": "return 200"
+                }
+            ],
+            "test":[
+                "it should return 401 if x-auth-token is undefined",
+                "it should return 403 if user isn't admin",
+                "it should return 200",
+                "it should return user with given 'id'",
+                "it should return object that containe 'username', 'tags', 'id' and 'isAdmin' and doesn't have 'password' "
+            ]
+        },
+        {
+            "path":"/api/user/me",
+            "method":"get",
+            "description":"user can get it's properties with given id gathered from 'x-auth-token' ",
+            "header":[
+                "x-auth-token"
+            ],
+            "body":[
+                {
+                    "body":{},
+                    "return": "return 200"
+                }
+            ],
+            "test":[
+                "it should return 401 if x-auth-token is undefined",
+                "it should return 404 if user not found",
+                "it should return 200",
+                "it should return user with given 'id' gathered from 'x-auth-token' ",
+                "it should return object that containe 'username', 'tags', 'id' and 'isAdmin' and doesn't have 'password' "
+            ]
+        },
+        {
+            "path":"/api/user",
+            "method":"post",
+            "description":"create a new user",
+            "header":[
+                "x-auth-token"
+            ],
+            "body":[
+                {
+                    "body":{
+                        "username":"string",
+                        "password":"string"
+                    },
+                    "return": "return 200"
+                }
+            ],
+            "test":[
+                "it should return 400 if shape of boby is different",
+                "it should return 409 if username already exist",
+                "it should return 200",
+                "it should return user with 'username' ",
+                "it should return body that containe 'username' , '_id', 'isAdmin' and 'x-auth-token' and doesn't have 'password' ",            
+                "it should return header that containe 'x-auth-token' "                
+            ]
+        },
+        {
+            "path":"/api/user/password",
+            "method":"put",
+            "description":"update user password",
+            "header":[
+                "x-auth-token"
+            ],
+            "body":[
+                {
+                    "body":{
+                        "oldpassword":"string",
+                        "newpassword":"string"
+                    },
+                    "return": "return 200"
+                }
+            ],
+            "test":[
+                "it should return 401 if x-auth-token is undefined",
+                "it should return 400 if shape of boby is different",
+                "it should return 400 if user not found",
+                "it should return 200",
+                "it should return empty object"
+            ]
+        },
+        {
+            "path":"/api/user/username",
+            "method":"put",
+            "description":"update username",
+            "header":[
+                "x-auth-token"
+            ],
+            "body":[
+                {
+                    "body":{
+                        "oldUsername":"string",
+                        "newUsername":"string"
+                    },
+                    "return": "return 200"
+                }
+            ],
+            "test":[
+                "it should return 401 if x-auth-token is undefined",
+                "it should return 400 if shape of boby is different",
+                "it should return 400 if user not found",
+                "it should return 200",
+                "it should return object that containe 'username' , 'id' and 'isAdmin' and doesn't have 'password' "                
+            ]
+        },
+        {
+            "path":"/api/user/me",
+            "method":"delete",
+            "description":"user can delete itslef",
+            "header":[
+                "x-auth-token"
+            ],
+            "body":[
+                {
+                    "body":{},
+                    "return": "return 200"
+                }
+            ],
+            "test":[
+                "it should return 401 if x-auth-token is undefined",
+                "it should return 400 if shape of boby is different",
+                "it should return 400 if user not found",
+                "it should return 200",
+                "it should return empty object"                
+            ]
+        },
+        {
+            "path":"/api/user/:id",
+            "method":"delete",
+            "description":"admin can delete a user",
+            "header":[
+                "x-auth-token"
+            ],
+            "body":[
+                {
+                    "body":{},
+                    "return": "return 200"
+                }
+            ],
+            "test":[
+                "it should return 401 if x-auth-token is undefined",
+                "it should return 403 if user isn't admin",
+                "it should return 400 if shape of boby is different",
+                "it should return 400 if user not found",
+                "it should return 200",
+                "it should return empty object"                
+            ]
+        },
+        {
+            "path":"/api/user/tag",
+            "method":"get",
+            "description":"user can get list of its tags",
+            "header":[
+                "x-auth-token"
+            ],
+            "body":[
+                {
+                    "body":{},
+                    "return": "return 200"
+                }
+            ],
+            "test":[
+                "it should return 401 if x-auth-token is undefined",
+                "it should return 404 if user not found",
+                "it should return 200",
+                "it should return array of object with 'name' and '_id' property"
+            ]
+        },
+        {
+            "path":"/api/user/tag/:id",
+            "method":"get",
+            "description":"user can get its tag properties with given id",
+            "header":[
+                "x-auth-token"
+            ],
+            "body":[
+                {
+                    "body":{},
+                    "return": "return 200"
+                }
+            ],
+            "test":[
+                "it should return 401 if x-auth-token is undefined",
+                "it should return 400 if shape of boby is different",
+                "it should return 400 if user not found",
+                "it should return 200",
+                "it should return object with 'name' property"
+            ]
+        },
+        {
+            "path":"/api/user/tag",
+            "method":"put",
+            "description":"user can add tag to its tags array",
+            "header":[
+                "x-auth-token"
+            ],
+            "body":[
+                {
+                    "body":{
+                        "id":"ObjectId"
+                    },
+                    "return": "return 200"
+                }
+            ],
+            "test":[
+                "it should return 401 if x-auth-token is undefined",
+                "it should return 400 if shape of boby is different",
+                "it should return 400 if user not found",
+                "it should return 409 if tag already exist",
+                "it should return 200",
+                "it should return user object with 'username','_id' nad 'tags' property"
+            ]
+        },
+        {
+            "path":"/api/user/tag",
+            "method":"delete",
+            "description":"user can delete tag from its tags array",
+            "header":[
+                "x-auth-token"
+            ],
+            "body":[
+                {
+                    "body":{
+                        "id":"ObjectId"
+                    },
+                    "return": "return 200"
+                }
+            ],
+            "test":[
+                "it should return 401 if x-auth-token is undefined",
+                "it should return 400 if shape of boby is different",
+                "it should return 400 if user not found",
+                "it should return 409 if tag not found",
+                "it should return 200",
+                "it should return object with 'name' and '-id' property"
+            ]
+        }
+        
+    ]
+}
